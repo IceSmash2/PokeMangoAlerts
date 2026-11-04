@@ -15,7 +15,17 @@ an alert history kept on the phone.
 - If the service can't start, the alert falls back to a notification channel with a built-in sound.
 
 ## Tones
-`app/src/main/res/raw/alert_full.mp3` (about 2 minutes) and `alert_short.mp3` (15 seconds).
+`app/src/main/res/raw/alert_full.mp3` (about 2 minutes) and `alert_short.mp3` (15 seconds). A person can also
+choose their own sound from the phone's ringtone list or from any audio file. It is copied into the app's own
+storage (10 MB limit) and plays for at most 2 minutes. If it can't be played, the full song is used.
+
+## Links
+Alert taps and Open link buttons try the store's own app first (Target, Sam's Club, Costco) and fall back to the
+default app for the link. See `LinkOpener.kt`.
+
+## Settings shortcuts
+The settings page shows buttons that open Android's own screens for the alert channel (sound and Do Not
+Disturb override) and the app's info page (battery). The person makes every choice there.
 
 ## Build (GitHub Actions)
 1. Add these repository secrets (Settings, Secrets and variables, Actions): `GOOGLE_SERVICES_B64`,

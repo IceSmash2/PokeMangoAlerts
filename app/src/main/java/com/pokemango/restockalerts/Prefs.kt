@@ -7,16 +7,28 @@ import org.json.JSONObject
 object Prefs {
     const val TONE_FULL = "full"
     const val TONE_SHORT = "short"
+    const val TONE_CUSTOM = "custom"
     private const val HISTORY_LIMIT = 100
     private val lock = Any()
 
     private fun sp(ctx: Context) = ctx.applicationContext.getSharedPreferences("ra", Context.MODE_PRIVATE)
 
-    fun tone(ctx: Context): String =
-        if (sp(ctx).getString("tone", TONE_FULL) == TONE_SHORT) TONE_SHORT else TONE_FULL
+    fun normalizeTone(ctx: Context, tone: String?): String = when (tone) {
+        TONE_SHORT -> TONE_SHORT
+        TONE_CUSTOM -> if (CustomSound.exists(ctx)) TONE_CUSTOM else TONE_FULL
+        else -> TONE_FULL
+    }
+
+    fun tone(ctx: Context): String = normalizeTone(ctx, sp(ctx).getString("tone", TONE_FULL))
 
     fun setTone(ctx: Context, tone: String) {
-        sp(ctx).edit().putString("tone", if (tone == TONE_SHORT) TONE_SHORT else TONE_FULL).apply()
+        sp(ctx).edit().putString("tone", normalizeTone(ctx, tone)).apply()
+    }
+
+    fun customName(ctx: Context): String = sp(ctx).getString("custom_name", "") ?: ""
+
+    fun setCustomName(ctx: Context, name: String) {
+        sp(ctx).edit().putString("custom_name", name).apply()
     }
 
     fun token(ctx: Context): String = sp(ctx).getString("token", "") ?: ""

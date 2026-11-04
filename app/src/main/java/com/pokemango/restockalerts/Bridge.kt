@@ -1,6 +1,7 @@
 package com.pokemango.restockalerts
 
 import android.content.Intent
+import android.net.Uri
 import android.provider.Settings
 import android.webkit.JavascriptInterface
 import androidx.core.app.NotificationManagerCompat
@@ -35,8 +36,44 @@ class Bridge(private val activity: MainActivity) {
     }
 
     @JavascriptInterface
+    fun customName(): String = if (CustomSound.exists(activity)) Prefs.customName(activity) else ""
+
+    @JavascriptInterface
+    fun pickFile() {
+        activity.runOnUiThread { activity.launchFilePicker() }
+    }
+
+    @JavascriptInterface
+    fun pickSystemSound() {
+        activity.runOnUiThread { activity.launchSystemPicker() }
+    }
+
+    @JavascriptInterface
     fun preview(tone: String) {
-        TonePlayer.play(activity, if (tone == Prefs.TONE_SHORT) Prefs.TONE_SHORT else Prefs.TONE_FULL) { }
+        TonePlayer.play(activity, Prefs.normalizeTone(activity, tone)) { }
+    }
+
+    @JavascriptInterface
+    fun openChannelSettings() {
+        activity.runOnUiThread {
+            val channel = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+                .putExtra(Settings.EXTRA_CHANNEL_ID, Notifier.CH_ALERTS)
+            try {
+                activity.startActivity(channel)
+            } catch (e: Exception) {
+                openSettings()
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openBatterySettings() {
+        activity.runOnUiThread {
+            val details = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                .setData(Uri.fromParts("package", activity.packageName, null))
+            try { activity.startActivity(details) } catch (e: Exception) { /* settings unavailable */ }
+        }
     }
 
     @JavascriptInterface
