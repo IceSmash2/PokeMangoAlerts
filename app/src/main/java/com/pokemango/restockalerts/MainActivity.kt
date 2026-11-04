@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        AlertService.stop(this)
         web.onResume()
         runScript("window.dispatchEvent(new Event('ra-history')); window.dispatchEvent(new Event('ra-permission'))")
     }

@@ -10,7 +10,8 @@ an alert history kept on the phone.
   browser push.
 - `PushService` receives the alert message, saves it to the history, and starts `AlertService`.
 - `AlertService` is a foreground service. It shows the alert notification and plays the chosen tone through
-  `TonePlayer` on the alarm volume until it ends, you tap Stop, or you swipe the notification away.
+  `TonePlayer` on the alarm volume until it ends, you tap Stop, swipe the notification away, press a volume
+  key, or open the app.
 - If the service can't start, the alert falls back to a notification channel with a built-in sound.
 
 ## Tones
