@@ -1,10 +1,15 @@
 package com.pokemango.restockalerts
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
 import android.provider.Settings
 import android.webkit.JavascriptInterface
 import androidx.core.app.NotificationManagerCompat
+import org.json.JSONArray
+import org.json.JSONObject
 
 class Bridge(private val activity: MainActivity) {
     @JavascriptInterface
@@ -74,6 +79,46 @@ class Bridge(private val activity: MainActivity) {
                 .setData(Uri.fromParts("package", activity.packageName, null))
             try { activity.startActivity(details) } catch (e: Exception) { /* settings unavailable */ }
         }
+    }
+
+    @JavascriptInterface
+    fun openSoundSettings() {
+        activity.runOnUiThread {
+            try {
+                activity.startActivity(Intent(Settings.ACTION_SOUND_SETTINGS))
+            } catch (e: Exception) { /* settings unavailable */ }
+        }
+    }
+
+    @JavascriptInterface
+    fun diagnose(): String {
+        val issues = JSONArray()
+        fun add(id: String, title: String, fix: String, action: String, label: String) {
+            issues.put(JSONObject().put("id", id).put("title", title).put("fix", fix)
+                .put("action", action).put("label", label))
+        }
+        val manager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (!NotificationManagerCompat.from(activity).areNotificationsEnabled()) {
+            add("notif_off", "Notifications are off for this app",
+                "Alerts can't reach you until notifications are turned on.", "app", "Open notification settings")
+        } else {
+            val channel = manager.getNotificationChannel(Notifier.CH_ALERTS)
+            if (channel != null && channel.importance == NotificationManager.IMPORTANCE_NONE) {
+                add("channel_off", "The alert category is turned off",
+                    "Turn the alerts category back on in the notification settings.", "channel", "Open alert settings")
+            }
+        }
+        val audio = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (audio.getStreamVolume(AudioManager.STREAM_ALARM) == 0) {
+            add("alarm_volume", "Alarm volume is at zero",
+                "The alert sound plays at alarm volume. Raise it in your sound settings.", "sound", "Open sound settings")
+        }
+        if (manager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL &&
+            manager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_UNKNOWN) {
+            add("dnd", "Do Not Disturb is on",
+                "Alerts may be silenced. Allow this app's alert category to override Do Not Disturb.", "channel", "Open alert settings")
+        }
+        return issues.toString()
     }
 
     @JavascriptInterface
