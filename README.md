@@ -4,6 +4,10 @@ A small Android app for the restock alert service. It shows the alert web app in
 what a browser can't: Firebase push, a long alarm-volume sound with two tone choices, a Stop button, and
 an alert history kept on the phone.
 
+## Quick links
+- [Download the latest APK](https://github.com/IceSmash2/PokeMangoAlerts/releases/latest)
+- [Build a new APK](https://github.com/IceSmash2/PokeMangoAlerts/actions/workflows/android.yml)
+
 ## How it works
 - `MainActivity` loads `https://<your-service>.onrender.com/app/` in a WebView. The page detects the
   `AndroidApp` bridge (`Bridge.kt`) and registers this phone as an Android (`fcm`) device instead of using
