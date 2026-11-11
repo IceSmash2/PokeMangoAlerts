@@ -113,10 +113,19 @@ class Bridge(private val activity: MainActivity) {
             add("alarm_volume", "Alarm volume is at zero",
                 "The alert sound plays at alarm volume. Raise it in your sound settings.", "sound", "Open sound settings")
         }
-        if (manager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL &&
-            manager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_UNKNOWN) {
-            add("dnd", "Do Not Disturb is on",
-                "Alerts may be silenced. Allow this app's alert category to override Do Not Disturb.", "channel", "Open alert settings")
+        val filter = manager.currentInterruptionFilter
+        val channel = manager.getNotificationChannel(Notifier.CH_ALERTS)
+        if (filter == NotificationManager.INTERRUPTION_FILTER_NONE) {
+            add("dnd", "Do Not Disturb is set to total silence",
+                "Total silence blocks alarms, so the alert sound won't play. Switch Do Not Disturb to allow alarms.",
+                "sound", "Open sound settings")
+        } else if (filter == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
+            filter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) {
+            if (channel != null && !channel.canBypassDnd()) {
+                add("dnd_banner", "Do Not Disturb may hide the alert banner",
+                    "The alert sound still plays, but the notification may be hidden. Turn on Override Do Not Disturb for the alert category to see it too.",
+                    "channel", "Open alert settings")
+            }
         }
         return issues.toString()
     }
