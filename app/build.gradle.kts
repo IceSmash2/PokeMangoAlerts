@@ -4,8 +4,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-val appVersionName = (project.findProperty("appVersionName") as String?) ?: "1.1.3"
-val appVersionCode = ((project.findProperty("appVersionCode") as String?) ?: "5").toInt()
+val appVersionName = (project.findProperty("appVersionName") as String?) ?: "1.2"
+val appVersionCode = ((project.findProperty("appVersionCode") as String?) ?: "6").toInt()
 val serverUrl = (project.findProperty("serverUrl") as String?) ?: "https://pokemon-alarm-bot.onrender.com/"
 
 android {

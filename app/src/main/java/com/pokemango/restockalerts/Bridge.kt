@@ -150,6 +150,24 @@ class Bridge(private val activity: MainActivity) {
     }
 
     @JavascriptInterface
+    fun openInBrowser(url: String): Boolean {
+        val safe = Alert.safeUrl(url)
+        if (safe.isEmpty()) return false
+        val uri = Uri.parse(safe)
+        activity.runOnUiThread {
+            try {
+                val browser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+                browser.data = uri
+                browser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                activity.startActivity(browser)
+            } catch (e: Exception) {
+                LinkOpener.open(activity, safe)
+            }
+        }
+        return true
+    }
+
+    @JavascriptInterface
     fun retry() {
         activity.runOnUiThread { activity.load() }
     }
