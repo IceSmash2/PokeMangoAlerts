@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                     Prefs.setTone(this, Prefs.TONE_CUSTOM)
                     runScript("window.dispatchEvent(new Event('ra-tone'))")
                 } else {
-                    Toast.makeText(this, "That sound can’t be used. Try an audio file under 10 MB.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "That sound can’t be used. Try an audio file under 25 MB.", Toast.LENGTH_LONG).show()
                 }
             }
         }.start()

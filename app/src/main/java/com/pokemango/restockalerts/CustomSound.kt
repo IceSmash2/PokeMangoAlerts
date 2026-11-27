@@ -6,7 +6,7 @@ import android.net.Uri
 import java.io.File
 
 object CustomSound {
-    private const val MAX_BYTES = 10L * 1024 * 1024
+    private const val MAX_BYTES = 25L * 1024 * 1024
 
     fun file(ctx: Context): File = File(ctx.applicationContext.filesDir, "custom_sound")
 

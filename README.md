@@ -21,7 +21,7 @@ an alert history kept on the phone.
 ## Tones
 `app/src/main/res/raw/alert_full.mp3` (about 2 minutes) and `alert_short.mp3` (15 seconds). A person can also
 choose their own sound from the phone's ringtone list or from any audio file. It is copied into the app's own
-storage (10 MB limit) and plays for at most 2 minutes. If it can't be played, the full song is used.
+storage (25 MB limit) and plays for at most 2 minutes. If it can't be played, the full song is used.
 
 ## Links
 Alert taps and Open link buttons try the store's own app first (Target, Sam's Club, Costco) and fall back to the
